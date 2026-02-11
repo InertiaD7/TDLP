@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: monospace;
+        }
+
+        body {
+            background-color: burlywood;
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .toDoList {
+            width: 400px;
+            height: 550px;
+            background-color: darkkhaki;
+            border: 2px solid black;
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .title h1 {
+            font-weight: 900;
+            text-align: center;
+            padding: 15px 0;
+            background: rgba(0, 0, 0, 0.1);
+        }
+
+        .list {
+            padding: 15px 20px;
+            height: 350px;
+            overflow-y: auto;
+            background: darkcyan;
+        }
+
+        .list p {
+            margin: 8px 0;
+            padding: 6px 10px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.1rem;
+        }
+
+        .delete-btn {
+            background: brown;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        .interact {
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            right: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+            padding: 0 20px;
+        }
+
+        .inp {
+            width: 240px;
+            height: 36px;
+            padding: 0 12px;
+            font-size: 1rem;
+            text-align: center;
+            border: 2px solid #444;
+            border-radius: 6px;
+        }
+
+        .btnFlex {
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn {
+            width: 110px;
+            height: 36px;
+            background-color: slategray;
+            color: antiquewhite;
+            font-weight: 600;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        .btn:hover {
+            background-color: #5a6a7a;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="toDoList">
+        <div class="title">
+            <h1>To-Do LIST</h1>
+        </div>
+
+        <div class="list" id="taskList"><i class="fa-solid fa-delete-left" id="x"></i></div>
+
+        <div class="interact">
+            <input type="text" placeholder="Enter task..." class="inp" id="inp">
+            <div class="btnFlex">
+                <button class="btn" id="add">Add Task</button>
+                <button class="btn" id="clear">Clear All</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let x = document.getElementById("x");
+        x.style.cssText = "display: none";
+
+        const taskList = document.getElementById("taskList");
+        const inp = document.getElementById("inp");
+        const addBtn = document.getElementById("add");
+        const clearBtn = document.getElementById("clear");
+
+        let tasks = [];
+
+        function renderTasks() {
+            taskList.innerHTML = "";
+            tasks.forEach((task, index) => {
+                const p = document.createElement("p");
+                p.innerHTML = `<span>${index + 1}. ${task}</span>`;
+
+                let xClone = x.cloneNode(true);
+                xClone.style.display = 'inline';
+                const delBtn = document.createElement("button");
+                delBtn.className = "delete-btn";
+                delBtn.appendChild(xClone);
+
+                delBtn.onclick = () => {
+                    tasks.splice(index, 1);
+                    renderTasks();   // ← this re-renders + renumbers automatically :)
+                };
+
+                p.appendChild(delBtn);
+                taskList.appendChild(p);
+            });
+        }
+
+        function addTask() {
+            const value = inp.value.trim();
+            if (!value) return;
+
+            tasks.push(value);
+            inp.value = "";
+            renderTasks();
+        }
+
+        function clearAll() {
+            tasks = [];
+            renderTasks();
+        }
+
+        // Events
+        addBtn.addEventListener("click", addTask);
+
+        inp.addEventListener("keypress", (e) => {
+            if (e.key === "Enter") {
+                addTask();
+            }
+        });
+
+        clearBtn.addEventListener("click", clearAll);
+
+        // start with focus on input
+        inp.focus();
+    </script>
+</body>
+
+</html>
